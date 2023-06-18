@@ -29,10 +29,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer() 
     contenuto = await fetch(query.data)
-    await context.bot.send_message(chat_id=query.message.chat_id, text=f"""Il nome del pronto soccorso selezionato è : {contenuto[0]}, il numero di telefono {contenuto[1]}.\n
-    Il pronto soccorso è attualmento : {contenuto[2]}.\n
-    I pazienti in attesa sono : {contenuto[3]}.\n
-    I pazienti presi in carico sono : {contenuto[4]}""")
+    await context.bot.send_message(chat_id=query.message.chat_id, text=f"""Il nome del pronto soccorso selezionato è : {contenuto[0]}\nIl numero di telefono {contenuto[1]}.\nIl pronto soccorso è attualmento : {contenuto[2]}.\nI pazienti in attesa sono : {contenuto[3]}\nI pazienti presi in carico sono : {contenuto[4]}""")
     #await query.edit_message_text(text="Updated data") Per modificare il messaggio
 
 async def fetch(ospedale):
@@ -41,6 +38,10 @@ async def fetch(ospedale):
     nomePS = data[0]["anagraficaPS"]["struttura"]["denominazione"]
     telefono = data[0]["anagraficaPS"]["telefono"]
     apertura = data[0]["anagraficaPS"]["psAperto"]
+    if apertura == True:
+        apertura = "Aperto"
+    else:
+        apertura = "Chiuso"
     pazientiAttesa = data[0]["statoPS"]["numPazientiInAttesa"]
     pazientiCarico = data[0]["statoPS"]["numPazientiInCarico"]
     return nomePS, telefono, apertura , pazientiAttesa , pazientiCarico
