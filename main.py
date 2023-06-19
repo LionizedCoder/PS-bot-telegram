@@ -29,7 +29,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer() 
     contenuto = await fetch(query.data)
-    await context.bot.send_message(chat_id=query.message.chat_id, text=f"""Il nome del pronto soccorso selezionato è : {contenuto[0]}\nIl numero di telefono {contenuto[1]}.\nIl pronto soccorso è attualmento : {contenuto[2]}.\nI pazienti in attesa sono : {contenuto[3]}\nI pazienti presi in carico sono : {contenuto[4]}""")
+    attesa = list(contenuto[3].values()) #bianchi, gialli, rossi, totale, verde
+    carico = list(contenuto[4].values()) #bianchi, gialli, rossi, totale, verde
+    await context.bot.send_message(chat_id=query.message.chat_id, text=f"""Il nome del pronto soccorso selezionato è """
+    f"""{contenuto[0]}.\nIl pronto soccorso è attualmento : {contenuto[2]}.\nI """
+    f"""pazienti in attesa sono :\n⚪️ {attesa[0]}\n🟢 {attesa[4]}\n🟡 {attesa[1]}\n🔴 {attesa[2]}\nTotale {attesa[3]}"""
+    f"""\nI pazienti presi in carico sono :\n⚪️ {carico[0]}\n🟢 {carico[4]}\n🟡 {carico[1]}\n🔴 {carico[2]}\nTotale {carico[3]}""")
+    await context.bot.send_contact(chat_id=query.message.chat_id,phone_number=contenuto[1], first_name=contenuto[0])
     #await query.edit_message_text(text="Updated data") Per modificare il messaggio
 
 async def fetch(ospedale):
