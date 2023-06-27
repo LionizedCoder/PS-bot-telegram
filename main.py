@@ -24,33 +24,37 @@ async def prontosoccorso(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('''Ecco la lista dei pronto soccorsi nella zona di 
 Milano. ⚪️🟢🟡🔴''', reply_markup = InlineKeyboardMarkup(keyboard))
 
+def format_ps_code_message(source):
+    return f"""⚪️ {source[0]}\n"""
+    f"""🟢 {source[4]}\n"""
+    f"""🟡 {source[1]}\n"""
+    f"""🔴 {source[2]}\n"""
+    f"""Totale {source[3]}"""
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
+    chat_id = query.message.chat_id
     await query.answer() 
-    contenuto = await fetch(query.data)
-    attesa = list(contenuto[3].values()) #bianchi, gialli, rossi, totale, verde
-    carico = list(contenuto[4].values()) #bianchi, gialli, rossi, totale, verde
-    await context.bot.send_message(chat_id=query.message.chat_id, text=f"""Il nome del pronto soccorso selezionato è """
-    f"""{contenuto[0]}.\nIl pronto soccorso è attualmento : {contenuto[2]}.\nI """
-    f"""pazienti in attesa sono :\n⚪️ {attesa[0]}\n🟢 {attesa[4]}\n🟡 {attesa[1]}\n🔴 {attesa[2]}\nTotale {attesa[3]}"""
-    f"""\nI pazienti presi in carico sono :\n⚪️ {carico[0]}\n🟢 {carico[4]}\n🟡 {carico[1]}\n🔴 {carico[2]}\nTotale {carico[3]}""")
-    await context.bot.send_contact(chat_id=query.message.chat_id,phone_number=contenuto[1], first_name=contenuto[0])
+    nomePS, telefono, apertura, pazientiAttesa, pazientiCarico = await fetch(query.data).values
+    attesa, carico = [list(pazientiAttesa.values()), list(pazientiCarico.values())]
+    await context.bot.send_message(chat_id=chat_id, text=f"""Il nome del pronto soccorso selezionato è {nomePS}.\n"""
+    f"""Il pronto soccorso è attualmente : {apertura}.\n"""
+    f"""I pazienti in attesa sono :\n"""
+    f"""{format_ps_code_message(attesa)}"""
+    f"""I pazienti presi in carico sono :\n"""
+    f"""{format_ps_code_message(carico)}""")
+    await context.bot.send_contact(chat_id=chat_id,phone_number=telefono, first_name=nomePS)
     #await query.edit_message_text(text="Updated data") Per modificare il messaggio
 
 async def fetch(ospedale):
     response = requests.get(api.API_URL[ospedale])
     data = json.loads(response.text)
-    nomePS = data[0]["anagraficaPS"]["struttura"]["denominazione"]
-    telefono = data[0]["anagraficaPS"]["telefono"]
-    apertura = data[0]["anagraficaPS"]["psAperto"]
-    if apertura == True:
-        apertura = "Aperto"
-    else:
-        apertura = "Chiuso"
-    pazientiAttesa = data[0]["statoPS"]["numPazientiInAttesa"]
-    pazientiCarico = data[0]["statoPS"]["numPazientiInCarico"]
-    return nomePS, telefono, apertura , pazientiAttesa , pazientiCarico
+    anagraficaPS, statoPS = data[0].values
+    nomePS, telefono = anagraficaPS.struttura.denominazione, anagraficaPS.telefono
+    apertura = "Aperto" if anagraficaPS.psAperto else "Chiuso"
+    pazientiAttesa = statoPS.numPazientiInAttesa
+    pazientiCarico = statoPS.numPazientiInCarico
+    return nomePS, telefono, apertura, pazientiAttesa, pazientiCarico
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
