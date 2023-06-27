@@ -36,7 +36,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = query.message.chat_id
     await query.answer() 
     nomePS, telefono, apertura, pazientiAttesa, pazientiCarico = await fetch(query.data).values
-    attesa, carico = [list(pazientiAttesa.values()), list(pazientiCarico.values())]
+    attesa, carico = [list(pazientiAttesa.values()), list(pazientiCarico.values())] #bianchi, gialli, rossi, totale, verde
     await context.bot.send_message(chat_id=chat_id, text=f"""Il nome del pronto soccorso selezionato è {nomePS}.\n"""
     f"""Il pronto soccorso è attualmente : {apertura}.\n"""
     f"""I pazienti in attesa sono :\n"""
