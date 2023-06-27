@@ -56,7 +56,7 @@ async def fetch(ospedale):
     pazientiCarico = statoPS.numPazientiInCarico
     return nomePS, telefono, apertura, pazientiAttesa, pazientiCarico
 
-async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
 if __name__ == '__main__':
