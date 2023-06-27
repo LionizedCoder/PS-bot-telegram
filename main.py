@@ -52,8 +52,7 @@ async def fetch(ospedale):
     anagraficaPS, statoPS = data[0].values
     nomePS, telefono = anagraficaPS.struttura.denominazione, anagraficaPS.telefono
     apertura = "Aperto" if anagraficaPS.psAperto else "Chiuso"
-    pazientiAttesa = statoPS.numPazientiInAttesa
-    pazientiCarico = statoPS.numPazientiInCarico
+    pazientiAttesa, pazientiCarico = statoPS.numPazientiInAttesa, statoPS.numPazientiInCarico
     return nomePS, telefono, apertura, pazientiAttesa, pazientiCarico
 
 def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
