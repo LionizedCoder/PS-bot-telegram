@@ -4,10 +4,11 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import requests
 import const as api
 import json
+import os
 print('Mi sto avviando')
 
-TOKEN: Final = ''
-BOT_USERNAME: Final = ''
+TOKEN: Final = os.environ['BOT_TOKEN']
+BOT_USERNAME: Final = '@prontosoccorsostatobot'
 keyboard = [
         [InlineKeyboardButton("🏥 San Raffaele", callback_data='SanRaffaele')],
         [InlineKeyboardButton("🏥 Ospedale San Carlo Borromeo", callback_data='SanCarloBorromeo')],
