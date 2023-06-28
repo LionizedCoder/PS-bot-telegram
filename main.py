@@ -1,4 +1,3 @@
-from typing import Final
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes , CallbackQueryHandler
 import requests
@@ -7,8 +6,8 @@ import json
 import os
 print('Mi sto avviando')
 
-TOKEN: Final = os.environ['BOT_TOKEN']
-BOT_USERNAME: Final = '@prontosoccorsostatobot'
+TOKEN = os.environ['BOT_TOKEN']
+BOT_USERNAME = '@prontosoccorsostatobot'
 keyboard = [
         [InlineKeyboardButton("🏥 San Raffaele", callback_data='SanRaffaele')],
         [InlineKeyboardButton("🏥 Ospedale San Carlo Borromeo", callback_data='SanCarloBorromeo')],
