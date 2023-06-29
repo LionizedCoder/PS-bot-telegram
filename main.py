@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     dispatcher.add_handler(CommandHandler('start', start_command))
     dispatcher.add_handler(CommandHandler('messaggio', prontosoccorso))
-    dispatcher.add_handler(MessageHandler(Filters.Text & ~Filters.command, button))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, button))
     dispatcher.add_error_handler(error)
 
     print('Ascolto...')
