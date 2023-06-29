@@ -1,5 +1,5 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CallbackContext, CommandHandler, MessageHandler, Updater
+from telegram.ext import CallbackContext, CommandHandler, MessageHandler, Updater, Filters
 import requests
 import const as api
 import json
@@ -56,13 +56,12 @@ def error(update: Update, context: CallbackContext):
     print(f'Update {update} caused error {context.error}')
 
 if __name__ == '__main__':
-    updater = Updater(TOKEN)
+    updater = Updater(token = TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler('start', start_command))
     dispatcher.add_handler(CommandHandler('messaggio', prontosoccorso))
-    dispatcher.add_handler(MessageHandler(Filters.text, button))
-
+    dispatcher.add_handler(MessageHandler(Filters.Text & ~Filters.command, button))
     dispatcher.add_error_handler(error)
 
     print('Ascolto...')
